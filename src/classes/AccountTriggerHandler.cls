@@ -1,4 +1,4 @@
-
+//Sample code for AccountTriggerHandler
 public class AccountTriggerHandler extends TriggerHandler{
 
     public override void beforeInsert(){

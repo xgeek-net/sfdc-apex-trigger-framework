@@ -47,6 +47,15 @@ public virtual class TriggerHandler{
 		return String.valueOf( this ).split( ':' )[0];
 	}
 
+	/**
+	 * Get sObject name from Trigger
+	 * @return String sObject Name
+	 */
+	public String getObjectName(){
+		if( !newList.isEmpty() ) return newList[0].getSObjectType().getDescribe().getName();
+		else return oldList[0].getSObjectType().getDescribe().getName();
+	}
+
 	public virtual void beforeInsert(){}
 
 	public virtual void beforeUpdate(){}

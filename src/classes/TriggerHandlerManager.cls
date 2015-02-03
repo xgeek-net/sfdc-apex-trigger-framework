@@ -50,6 +50,8 @@ public class TriggerHandlerManager{
 
     		//TriggerHandler has been locked.
     		if( isHandlerLock( handler.getName() ) ) continue;
+            //sObject Trigger has been locked.
+            if( isHandlerLock( handler.getObjectName() ) ) continue;
 
     		if( Trigger.isBefore && Trigger.isInsert ) {
     			handler.beforeInsert();
@@ -88,7 +90,7 @@ public class TriggerHandlerManager{
     	handlerLockMap.put( handlerName, false );
     }
 
-    //TriggerHandler is locked
+    //TriggerHandler or sObject is locked
     private Boolean isHandlerLock( String handlerName ) {
 
     	if( !handlerLockMap.containsKey( handlerName ) ) return false;

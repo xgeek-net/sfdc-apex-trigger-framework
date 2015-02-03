@@ -22,13 +22,13 @@ public class AccountTriggerHandler extends TriggerHandler{
     	System.debug( 'Trigger.isUpdate : ' 	+ isUpdate );
     	System.debug( 'Trigger.isDelete : ' 	+ isDelete );
     	System.debug( 'Trigger.isBefore : ' 	+ isBefore );
-    	System.debug( 'Trigger.isAfter : ' 		+ isAfter );
+    	System.debug( 'Trigger.isAfter : ' 	+ isAfter );
     	System.debug( 'Trigger.isUndelete : ' 	+ isUndelete );
-    	System.debug( 'Trigger.new : ' 			+ newList );
-    	System.debug( 'Trigger.newMap : ' 		+ newMap );
-    	System.debug( 'Trigger.old : ' 			+ oldList );
-    	System.debug( 'Trigger.oldMap : ' 		+ oldMap );
-    	System.debug( 'Trigger.size : ' 		+ size );
+    	System.debug( 'Trigger.new : ' 		+ newList );
+    	System.debug( 'Trigger.newMap : ' 	+ newMap );
+    	System.debug( 'Trigger.old : ' 		+ oldList );
+    	System.debug( 'Trigger.oldMap : ' 	+ oldMap );
+    	System.debug( 'Trigger.size : ' 	+ size );
 
     	System.debug('AccountTriggerHandler beforeInsert End');
     }
@@ -60,7 +60,7 @@ public class AccountTriggerHandler extends TriggerHandler{
 }
 ```
 ###AccountTrigger.trigger
-In normal case.
+####In normal case.
 ```java
 trigger AccountTrigger on Account (before delete, before insert, before update, 
                                     after delete, after insert, after update,after Undelete) {
@@ -68,6 +68,12 @@ trigger AccountTrigger on Account (before delete, before insert, before update,
     handlerManager.add( new AccountTriggerHandler() );
     handlerManager.run();
 }
+```
+####Other cases
+Stop and resume sObject Trigger in APEX code
+```java
+TriggerHandlerManager.stop( 'CustomObject__c' );
+TriggerHandlerManager.resume( 'CustomObject__c' );
 ```
 Stop and resume a TriggerHandler in APEX code
 ```java
