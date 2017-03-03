@@ -26,77 +26,76 @@
 
 public class TriggerHandlerManager{
 
-	private List<TriggerHandler> handlerList = new List<TriggerHandler>();
+  private List<TriggerHandler> handlerList = new List<TriggerHandler>();
 
-	private static Map<String, Boolean> handlerLockMap = new Map<String, Boolean>();
+  private static Map<String, Boolean> handlerLockMap = new Map<String, Boolean>();
     
-    /**
-     * Add a TriggerHandler
-     * @param TriggerHandler handler
-     */
-    public void add( TriggerHandler handler ) {
+  /**
+   * Add a TriggerHandler
+   * @param TriggerHandler handler
+   */
+  public void add( TriggerHandler handler ) {
 
-    	handlerList.add( handler );
+    handlerList.add( handler );
+  }
+
+  /**
+   * Run Trigger Handlers
+   */
+  public void run() {
+
+    if( handlerList.isEmpty() ) return;
+
+    for( TriggerHandler handler : handlerList ) {
+      //TriggerHandler has been locked.
+      if( isHandlerLock( handler.getName() ) ) continue;
+      //sObject Trigger has been locked.
+      if( isHandlerLock( handler.getObjectName() ) ) continue;
+
+      if( Trigger.isBefore && Trigger.isInsert ) {
+        handler.beforeInsert();
+      } else if( Trigger.isBefore && Trigger.isUpdate ) {
+        handler.beforeUpdate();
+      } else if( Trigger.isBefore && Trigger.isDelete ) {
+        handler.beforeDelete();
+      } else if( Trigger.isAfter && Trigger.isInsert ) {
+        handler.afterInsert();
+      } else if( Trigger.isAfter && Trigger.isUpdate ) {
+        handler.afterUpdate();
+      } else if( Trigger.isAfter && Trigger.isDelete ) {
+        handler.afterDelete();
+      } else if( Trigger.isAfter && Trigger.isUndelete ) {
+        handler.afterUndelete();
+      }
     }
+  }
 
-    /**
-     * Run Trigger Handlers
-     */
-    public void run() {
+  /**
+   * Stop a TriggerHandler
+   * @param  String TriggerHandler class name
+   * @return none
+   */
+  public static void stop( String handlerName ) {
+    
+    handlerLockMap.put( handlerName, true );
+  }
+  /**
+   * Resume a TriggerHandler
+   * @param  String TriggerHandler class name
+   * @return none
+   */
+  public static void resume( String handlerName ) {
 
-    	if( handlerList.isEmpty() ) return;
+    handlerLockMap.put( handlerName, false );
+  }
 
-    	for( TriggerHandler handler : handlerList ) {
+  //TriggerHandler or sObject is locked
+  private Boolean isHandlerLock( String handlerName ) {
 
-    		//TriggerHandler has been locked.
-    		if( isHandlerLock( handler.getName() ) ) continue;
-            //sObject Trigger has been locked.
-            if( isHandlerLock( handler.getObjectName() ) ) continue;
+    if( !handlerLockMap.containsKey( handlerName ) ) return false;
 
-    		if( Trigger.isBefore && Trigger.isInsert ) {
-    			handler.beforeInsert();
-    		} else if( Trigger.isBefore && Trigger.isUpdate ) {
-    			handler.beforeUpdate();
-    		} else if( Trigger.isBefore && Trigger.isDelete ) {
-    			handler.beforeDelete();
-    		} else if( Trigger.isAfter && Trigger.isInsert ) {
-    			handler.afterInsert();
-    		} else if( Trigger.isAfter && Trigger.isUpdate ) {
-    			handler.afterUpdate();
-    		} else if( Trigger.isAfter && Trigger.isDelete ) {
-    			handler.afterDelete();
-    		} else if( Trigger.isAfter && Trigger.isUndelete ) {
-    			handler.afterUndelete();
-    		}
-    	}
-    }
-
-    /**
-     * Stop a TriggerHandler
-     * @param  String TriggerHandler class name
-     * @return none
-     */
-    public static void stop( String handlerName ) {
-    	
-    	handlerLockMap.put( handlerName, true );
-    }
-    /**
-     * Resume a TriggerHandler
-     * @param  String TriggerHandler class name
-     * @return none
-     */
-    public static void resume( String handlerName ) {
-
-    	handlerLockMap.put( handlerName, false );
-    }
-
-    //TriggerHandler or sObject is locked
-    private Boolean isHandlerLock( String handlerName ) {
-
-    	if( !handlerLockMap.containsKey( handlerName ) ) return false;
-
-    	Boolean isLock = handlerLockMap.get( handlerName );
-    	return isLock;
-    }
+    Boolean isLock = handlerLockMap.get( handlerName );
+    return isLock;
+  }
 
 }
